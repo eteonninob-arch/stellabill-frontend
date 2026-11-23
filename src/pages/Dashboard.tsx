@@ -21,10 +21,7 @@ import RevenueSplitByPlanPanel from '../components/Dashboard/RevenueSplitByPlanP
 import CardErrorSlot from '../components/Dashboard/CardErrorSlot';
 import OnboardingChecklistWidget from '../components/Dashboard/OnboardingChecklistWidget';
 import HelpHint from '../components/help/HelpHint';
-import ProductTour from '../components/ProductTour/ProductTour';
-import TourCompletion from '../components/ProductTour/TourCompletion';
-import { dashboardTourSteps } from '../components/ProductTour/tourSteps';
-import { useProductTour } from '../hooks/useProductTour';
+import TourResumeCheckpoint from '../components/Dashboard/TourResumeCheckpoint';
 import type { PlanRevenueSlice } from '../components/Dashboard/revenueSplitUtils';
 import {
   useDashboardWidgets,
@@ -160,15 +157,6 @@ export default function Dashboard() {
   const { filters, announcement: filterAnnouncement } = filterState;
   const { widgets, loadAll, retryWidget, isInitialLoading, failedWidgetIds } =
     useDashboardWidgets(filters);
-
-  const {
-    isOpen: isTourOpen,
-    showCompletion,
-    closeTour,
-    completeTour,
-    dismissTour,
-    closeCompletion,
-  } = useProductTour();
 
   const activeFilters = [
     ...(filters.status
@@ -585,23 +573,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Product Tour */}
-      <ProductTour
-        steps={dashboardTourSteps}
-        isOpen={isTourOpen}
-        onClose={closeTour}
-        onComplete={completeTour}
-        onDismiss={dismissTour}
-      />
-
-      {/* Tour Completion Celebration */}
-      <TourCompletion
-        isOpen={showCompletion}
-        onClose={closeCompletion}
-        title="You're all set!"
-        message="You've completed the tour. You're ready to start managing your subscriptions and growing your business."
-        actionLabel="Get started"
-      />
+      <TourResumeCheckpoint />
     </>
   );
 }

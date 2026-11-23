@@ -3,6 +3,7 @@ import { Navigate, Routes, Route, useLocation } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 import TransitionLayout from "./components/TransitionLayout";
+import { ProductTourProvider } from "./components/Dashboard/ProductTourProvider";
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Subscriptions = lazy(() => import("./pages/Subscriptions"));
 const SubscriptionDetail = lazy(() => import("./pages/SubscriptionDetail"));
@@ -62,7 +63,7 @@ function ScrollToHash() {
 
 function App() {
   return (
-    <>
+    <ProductTourProvider>
     <ScrollToHash />
     <Suspense fallback={<div style={{ minHeight: '100vh' }} role="status" aria-label="Loading" />}>
     <Routes>
@@ -111,7 +112,7 @@ function App() {
       <Route path="*" element={<NotFound />} />
     </Routes>
     </Suspense>
-    </>
+    </ProductTourProvider>
   );
 }
 

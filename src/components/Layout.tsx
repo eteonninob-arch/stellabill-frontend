@@ -9,6 +9,7 @@ import HelpSidebar from "./help/HelpSidebar";
 import ChangelogPanel from "./changelog/ChangelogPanel";
 import FocusOrderVisualizer from "./FocusOrderVisualizer";
 import { LayoutContextType } from "../hooks/useCommandScope";
+import { useOptionalProductTour, resetTourStorage } from "./Dashboard/ProductTourProvider";
 import "../styles/sidebar.css";
 
 const RECENT_COMMANDS_KEY = "sb:recent-commands";
@@ -162,6 +163,7 @@ const devNav = [
 export default function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
+  const tour = useOptionalProductTour();
   const [isPaletteOpen, setIsPaletteOpen] = useState(false);
   const [isShortcutsOverlayOpen, setIsShortcutsOverlayOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
@@ -236,14 +238,18 @@ export default function Layout() {
       { id: "action-refund", label: "Issue refund", group: "Actions", hint: "Refund a subscription payment", keywords: "money back return reverse", perform: () => guardedNavigate("/subscriptions") },
       { id: "action-pause", label: "Pause subscription", group: "Actions", hint: "Temporarily stop billing", keywords: "hold suspend freeze", perform: () => guardedNavigate("/subscriptions") },
       { id: "action-tour", label: "Start product tour", group: "Actions", hint: "Take a guided tour of the dashboard", keywords: "help guide tutorial onboarding walkthrough", perform: () => {
-        // Trigger tour restart by clearing localStorage and reloading
-        localStorage.removeItem('sb:tour-completed');
-        localStorage.removeItem('sb:tour-dismissed');
-        window.location.reload();
+        if (tour) {
+          tour.resetTour();
+          navigate("/dashboard");
+          tour.startTour();
+        } else {
+          resetTourStorage();
+          window.location.reload();
+        }
       }},
     ];
     return [...pages, ...actions];
-  }, [guardedNavigate]);
+  }, [guardedNavigate, navigate, tour]);
 
   const handleCommandSelect = (item: CommandItem) => {
     const baseId = item.id.replace(/^recent-/, "");

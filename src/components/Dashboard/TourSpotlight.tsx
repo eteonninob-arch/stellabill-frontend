@@ -21,7 +21,9 @@ export default function TourSpotlight({ step }: TourSpotlightProps) {
   ).matches;
 
   useEffect(() => {
-    const targetElement = document.querySelector(`[data-tour-id="${step.targetId}"]`);
+    const targetElement =
+      document.querySelector(`[data-tour-id="${step.targetId}"]`) ||
+      (step.targetSelector ? document.querySelector(step.targetSelector) : null);
     if (targetElement) {
       const observer = new IntersectionObserver(
         ([entry]) => {
@@ -44,7 +46,7 @@ export default function TourSpotlight({ step }: TourSpotlightProps) {
         resizeObserver.disconnect();
       };
     }
-  }, [step.targetId]);
+  }, [step.targetId, step.targetSelector]);
 
   useEffect(() => {
     nextButtonRef.current?.focus();
